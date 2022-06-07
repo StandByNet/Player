@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TennisPlayer.Repositories;
 
 namespace TennisPlayer
 {
@@ -26,6 +27,8 @@ namespace TennisPlayer
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddTransient< IJsonFileReader, JsonFileReader >();
+            services.AddTransient<IPlayerBestRepository, PlayerBestRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

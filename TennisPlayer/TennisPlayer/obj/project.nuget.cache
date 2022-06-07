@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "rRLx1jcMOs7Wp/BzFO6GDHiSShDIfQF8bWs1slJ3hqS93WOlnrqZAWCe2Yu6Hsy5Xma6GnoGAFWE1cH71IFZiA==",
+  "dgSpecHash": "byOkT0VwzhZvtxUs3ppa+IrVVlKI9ZhR3HqSIxVueTYxamTT1oNeWNq62a0Yd0NSVtc8qYgB+/Fus1kMDLejWA==",
   "success": true,
   "projectFilePath": "C:\\Users\\kaiber\\Player\\TennisPlayer\\TennisPlayer\\TennisPlayer.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\kaiber\\.nuget\\packages\\newtonsoft.json\\13.0.1\\newtonsoft.json.13.0.1.nupkg.sha512"
+  ],
   "logs": []
 }
