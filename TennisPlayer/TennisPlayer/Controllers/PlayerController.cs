@@ -15,11 +15,14 @@ namespace TennisPlayer.Controllers
     {
         public readonly IPlayerBestRepository playerBestRepository;
         public readonly IPlayerByIdRepository playerByIdRepository;
+        public readonly IStatistic statistic;
 
-        public PlayerController(IPlayerBestRepository _playerBestRepository, IPlayerByIdRepository _playerByIdRepository)
+
+        public PlayerController(IPlayerBestRepository _playerBestRepository, IPlayerByIdRepository _playerByIdRepository, IStatistic _statistic)
         {
             playerBestRepository = _playerBestRepository;
             playerByIdRepository = _playerByIdRepository;
+            statistic = _statistic;
         }
 
         [HttpGet]
@@ -54,5 +57,23 @@ namespace TennisPlayer.Controllers
             }
         }
 
+        [HttpGet("/Statistic")]
+        public async Task<ActionResult<string>> Get()
+        {
+            try
+            {
+                //get Country have max win
+                var contry = await statistic.GetCountryMoreRation();
+                //get IMC Moy
+                var imcMoy = await statistic.GetImc();
+                //get Mediane
+                var medianeTailPlayer = await statistic.GetMediane();
+                return Ok("contry = " + contry + " , Imc = " + imcMoy + " , medianeTailPlayer : " + medianeTailPlayer);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
     }
 }

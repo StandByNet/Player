@@ -30,6 +30,7 @@ namespace TennisPlayer
             services.AddTransient< IJsonFileReader, JsonFileReader >();
             services.AddTransient<IPlayerBestRepository, PlayerBestRepository>();
             services.AddTransient<IPlayerByIdRepository, PlayerByIdRepository>();
+            services.AddScoped<IStatistic, Statistic>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
