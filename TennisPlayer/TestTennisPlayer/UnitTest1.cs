@@ -18,9 +18,11 @@ namespace TestTennisPlayer
     {
         private readonly Mock<IPlayerBestRepository> playerBestRepository = new Mock<IPlayerBestRepository>();
         private readonly Mock<IPlayerByIdRepository> playerByIdRepository = new Mock<IPlayerByIdRepository>();
+        private readonly Mock<IStatistic> statistic = new Mock<IStatistic>();
         private readonly Mock<IJsonFileReader> jsonFileReader = new Mock<IJsonFileReader>();
         private readonly Random rand = new Random();
 
+        #region Test List players  order by of The best
         [Fact]
         public async Task GetPlayers_ListNull_return_NoFound()
         {
@@ -31,7 +33,7 @@ namespace TestTennisPlayer
             playerBestRepository.Setup(repo => repo.GetAllPlayersOrderByBestScor())
                .ReturnsAsync((IOrderedEnumerable<Player>)null);
 
-            var controller = new PlayerController(playerBestRepository.Object, playerByIdRepository.Object);
+            var controller = new PlayerController(playerBestRepository.Object, playerByIdRepository.Object, statistic.Object);
             //act
             var result = await controller.GetPlayers();
             //assert
@@ -50,18 +52,18 @@ namespace TestTennisPlayer
             playerBestRepository.Setup(repo => repo.GetAllPlayersOrderByBestScor())
                .ReturnsAsync(playersExpected);
 
-            var controller = new PlayerController(playerBestRepository.Object, playerByIdRepository.Object);
+            var controller = new PlayerController(playerBestRepository.Object, playerByIdRepository.Object, statistic.Object);
             //act
             var result = await controller.GetPlayers();
             //assert
             ((OkObjectResult)result.Result).Value.Should().BeEquivalentTo(playersExpected, option => option.ComparingByMembers<IOrderedEnumerable<Player>>());
-
         }
 
         private IOrderedEnumerable<Player> GetOrderPlayers(List<Player> playersForOrder)
         {
             return playersForOrder.OrderByDescending(c => c?.Data?.Points);
         }
+        #endregion
 
         #region Unit Test <Get Player by ID>
         [Fact]
@@ -71,7 +73,7 @@ namespace TestTennisPlayer
             //arrange
             playerByIdRepository.Setup(repo => repo.GetThePlayerById(id))
                 .ReturnsAsync((Player)null);
-            var controller = new PlayerController(playerBestRepository.Object, playerByIdRepository.Object);
+            var controller = new PlayerController(playerBestRepository.Object, playerByIdRepository.Object, statistic.Object);
             //act
             var result = await controller.GetPlayerById(17);
             //assert
@@ -88,7 +90,7 @@ namespace TestTennisPlayer
             PlayerByIdRepository playerByIdRepository1 = new PlayerByIdRepository(jsonFileReader.Object);
             playerByIdRepository.Setup(repo => repo.GetThePlayerById(It.IsAny<int>()))
                 .ReturnsAsync(playerExpected);
-            var controller = new PlayerController(playerBestRepository.Object, playerByIdRepository.Object);
+            var controller = new PlayerController(playerBestRepository.Object, playerByIdRepository.Object, statistic.Object);
             //act
             var result = await controller.GetPlayerById(17);
             //assert
@@ -101,15 +103,15 @@ namespace TestTennisPlayer
             int[] last = new int[5] { 1, 1, 1, 1, 1 };
             Country country = new Country()
             {
-                Code = Guid.NewGuid().ToString(),
+                Code = "USA",
                 Picture = Guid.NewGuid().ToString()
             };
             Data data = new Data()
             {
                 Age = rand.Next(),
                 Points = rand.Next(),
-                Weight = rand.Next(),
-                Height = rand.Next(),
+                Weight = 1000,//rand.Next(),
+                Height =100,// rand.Next(),
                 Last = last,
                 Rank = rand.Next()
             };
@@ -134,6 +136,32 @@ namespace TestTennisPlayer
                 k.Add(CreatPlayer());
             }
             return k;
+        }
+        #endregion
+
+        #region unit Test Stat
+        [Fact]
+        public async Task Get_WithIdExsistPlayer_ReturnSuccess()
+        {
+            Player playerExpected = CreatPlayer();
+            var lstPlyersIn = GetPlayers();
+            jsonFileReader.Setup(repo => repo.ReadAsync(It.IsAny<Guid>().ToString()))
+              .ReturnsAsync(lstPlyersIn);
+            playerByIdRepository.Setup(repo => repo.GetThePlayerById(It.IsAny<int>()))
+                .ReturnsAsync(playerExpected);
+            statistic.Setup(repo => repo.GetCountryMoreRation())
+                .ReturnsAsync("USA");
+            statistic.Setup(repo => repo.GetImc())
+                .ReturnsAsync(1);
+            statistic.Setup(repo => repo.GetMediane())
+                .ReturnsAsync(100);
+            //act
+            var controller = new PlayerController(playerBestRepository.Object, playerByIdRepository.Object, statistic.Object);
+            var result = await controller.Get();
+
+            //assert
+            ((OkObjectResult)result.Result).Value.Should().BeEquivalentTo("contry = USA , Imc = 1 , medianeTailPlayer : 100");
+
         }
         #endregion
     }
