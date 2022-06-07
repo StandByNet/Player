@@ -19,3 +19,4 @@ C:\Users\kaiber\Player\TennisPlayer\TennisPlayer\obj\Debug\netcoreapp3.1\TennisP
 C:\Users\kaiber\Player\TennisPlayer\TennisPlayer\obj\Debug\netcoreapp3.1\TennisPlayer.dll
 C:\Users\kaiber\Player\TennisPlayer\TennisPlayer\obj\Debug\netcoreapp3.1\TennisPlayer.pdb
 C:\Users\kaiber\Player\TennisPlayer\TennisPlayer\obj\Debug\netcoreapp3.1\TennisPlayer.genruntimeconfig.cache
+C:\Users\kaiber\Player\TennisPlayer\TennisPlayer\obj\Debug\netcoreapp3.1\TennisPlayer.csproj.AssemblyReference.cache
