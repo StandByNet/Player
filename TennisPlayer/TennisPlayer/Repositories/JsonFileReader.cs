@@ -10,8 +10,6 @@ namespace TennisPlayer.Repositories
 {
     public class JsonFileReader : IJsonFileReader
     {
-        private readonly string urlDto = @"Data\headtohead.json";
-
         public async Task<List<Player>> ReadAsync(string filePath)
         {
             Headtohead headtohead = new Headtohead();
