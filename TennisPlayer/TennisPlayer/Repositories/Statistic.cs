@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,15 +9,16 @@ namespace TennisPlayer.Repositories
     public class Statistic : IStatistic
     {
         private readonly IJsonFileReader jsonFileReader;
-        private readonly string urlDto = @"Data\headtohead.json";
+        private readonly IConfiguration Configuration;
 
-        public Statistic(IJsonFileReader _jsonFileReader)
+        public Statistic(IJsonFileReader _jsonFileReader, IConfiguration configuration)
         {
             jsonFileReader = _jsonFileReader;
+            Configuration = configuration;
         }
         public async Task<string> GetCountryMoreRation()
         {
-            var allPlayers = await jsonFileReader.ReadAsync(urlDto);
+            var allPlayers = await jsonFileReader.ReadAsync(GetUrlData());
             int countLstGangePart = allPlayers.Max(c => c.Data.Last.Count(c => c == 1));
             string countryFound = null;
             foreach (var playerItem in allPlayers)
@@ -29,13 +31,13 @@ namespace TennisPlayer.Repositories
 
         public async Task<double> GetImc()
         {
-            var allPlayers = await jsonFileReader.ReadAsync(urlDto);
+            var allPlayers = await jsonFileReader.ReadAsync(GetUrlData());
             return allPlayers.Average(c => (c.Data.Weight * 0.001) / (c.Data.Height * 0.01));
         }
 
         public async Task<double> GetMediane()
         {
-            var allPlayers = await jsonFileReader.ReadAsync(urlDto);
+            var allPlayers = await jsonFileReader.ReadAsync(GetUrlData());
             int countAllPlayer = allPlayers.Count();
             int medianeTailPlayer = 0;
             int indexMedian = countAllPlayer / 2;
@@ -52,5 +54,10 @@ namespace TennisPlayer.Repositories
             }
             return medianeTailPlayer;
         }
+        public string GetUrlData()
+        { 
+            return Configuration["UrlDto"];
+        }
+
     }
 }
